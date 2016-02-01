@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+
 typedef struct { } object;
 typedef struct { 
     object parent; 
@@ -14,15 +15,26 @@ typedef struct {
     };
 } mc ; 
 
+
 mc mc_init ( mc * this ,int x ,float y ,int _x ,float _y ){
-    mc instance;
     this->x = x;
     this->y = y;
     this->_x = _x; 
     this->_y = _y; 
-    return instance; 
+    return this; 
 } 
 
+mc mc_alloc( int x, float y, int _x, float _y ) {
+    mc* instance = (mc*)malloc( sizeof( mc ) );
+    mc_init( instance, x, y, _x, _y );
+    return intance;
+}
+
+mc mc_stackalloc( int x, float y, int _x, float _y ) {
+    mc instance;
+    mc_init( &instance, x, y, _x, _y) ;
+    return instance;
+}
 
 void mc_to_file ( mc * this, FILE* f ) { 
     fprintf( f, "int" " " "x" " = " "\"%d\"" "\n", this-> x );
@@ -34,4 +46,5 @@ void mc_to_file ( mc * this, FILE* f ) {
 int mc_somemethod ( mc * this ,int a ,int b ) { 
     return this->x + this->y + this->_y +this->_x + a + b;
 }
+
 

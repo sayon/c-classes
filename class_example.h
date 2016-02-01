@@ -1,5 +1,7 @@
+#pragma once
+
 #include "class.h"
-#define CLASS_mc(NAME, EXTENDS, PUBLIC_FIELD, PRIVATE_FIELD, PUBLIC_METHOD ) \
+#define CLASS_mc( NAME, EXTENDS, PUBLIC_FIELD, PRIVATE_FIELD, PUBLIC_METHOD ) \
     NAME( mc )\
     EXTENDS( object )\
     PUBLIC_FIELD( int, x, "%d" )\
