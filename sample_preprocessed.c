@@ -1,7 +1,15 @@
 #include <stdio.h>
 
+/* implementing virtual functions */
 
-typedef struct { } object;
+typedef void* vtable_t;
+
+typedef struct { vtable_t vtable[]; } object;
+
+static object object_init( object* obj ) {
+   obj->vtable = 0; 
+}
+
 typedef struct { 
     object parent; 
     int x; 
@@ -24,12 +32,17 @@ mc mc_init ( mc * this ,int x ,float y ,int _x ,float _y ){
     return this; 
 } 
 
-mc mc_alloc( int x, float y, int _x, float _y ) {
+
+
+
+
+//todo
+mc* mc_alloc( int x, float y, int _x, float _y ) {
     mc* instance = (mc*)malloc( sizeof( mc ) );
     mc_init( instance, x, y, _x, _y );
     return intance;
 }
-
+//todo
 mc mc_stackalloc( int x, float y, int _x, float _y ) {
     mc instance;
     mc_init( &instance, x, y, _x, _y) ;
@@ -48,3 +61,9 @@ int mc_somemethod ( mc * this ,int a ,int b ) {
 }
 
 
+/* TODO 
+ * Better ctors
+ * Dtors
+ * Virtual functions
+ * Interfaces
+ * */
