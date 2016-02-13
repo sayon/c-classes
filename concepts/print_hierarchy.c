@@ -3,7 +3,6 @@
 
 int printf(const char* format, x);
 
-
 typedef void* vtable_t;
 
 #define SKIP 
@@ -12,14 +11,15 @@ typedef void* vtable_t;
 #define CAT(x, y) CAT_(x,y)
 #define CAT_(x,y) x##y
 
-
 #define C_NAME( DESCR ) DESCR( ID, SKIP1, SKIP )
 #define C_BASE( DESCR ) DESCR( SKIP1, C_NAME, SKIP )
 #define C_BASEDESCR( DESCR ) DESCR( SKIP1, ID, SKIP )
+#define FOR_BASEDESCR( DESCR, DO ) DESCR( SKIP1, OBSTRUCT(DO), SKIP )
+#define DECLARE_BASE( t ) C_NAME(t) CAT(as_, C_NAME( t) );
 
 #define CLASS( DESCR )\
     typedef struct C_NAME( DESCR ){\
-        C_BASE( DESCR ) base;\
+        DESCR( SKIP1, DECLARE_BASE, SKIP )\
     } C_NAME( DESCR );
 
 #define STUB_ROOT( NAME, BASE, IS_BASE )\
@@ -30,43 +30,31 @@ typedef void* vtable_t;
     BASE( STUB_ROOT )\
     NAME( object )
 
+#define B1( NAME, BASE, IS_BASE) NAME(b1) BASE( OBJECT )
 #define B( NAME, BASE, IS_BASE) NAME(b) BASE( OBJECT )
 #define C( NAME, BASE, IS_BASE ) NAME( c ) BASE( B )    
-#define D( NAME, BASE, IS_BASE ) NAME( d ) BASE( C)    
+#define D( NAME, BASE, IS_BASE ) NAME( d ) BASE( C) BASE (B1)
 #define E( NAME, BASE, IS_BASE ) NAME( e ) BASE( D  )    
 
 CLASS( OBJECT )
+CLASS(B1)
 CLASS( B )
-CLASS( C)
+CLASS( C )
 CLASS( D )
 CLASS( E )
 
 #define GET_BASE(DESCR) DESCR(SKIP1, SKIP1, _BASE)
 #define IF_BASE_ELSE(DESCR, ACTIONS) CAT(ACTIONS, GET_BASE(DESCR))
 
-
 #define ANCESTORS( DESCR ) OBSTRUCT(IF_BASE_ELSE(DESCR, ANC))(DESCR) 
+#define ANC(DESCR) FOR_BASEDESCR(DESCR, ANCESTORS) FOR_BASEDESCR(DESCR, C_NAME)  
 
-#define ANC(DESCR) C_BASEDESCR (DESCR )  OBSTRUCT(ANCESTORS)(C_BASEDESCR(DESCR))
 #define ANC_BASE(DESCR) 
 
 
 EVAL( ANCESTORS(E))
-
-/*  
-#define ITE(x,y,z) x (y,z)
-#define T(x,y) x
-#define F(x,y) y
-
-
-#define G ,1)
-#define BA ,)
-#define LPAR (
-#define TEST(x,y) x##y
-#define MT TEST LPAR
- EVAL4( MT 0 G )
-
-
+FOR_BASEDESCR( D, C_NAME  )
+    --attempt
 EVAL5( ANCESTORS( E ) )
 EVAL5(EVAL5( ANCESTORS( E ) ))
 EVAL5(EVAL5(EVAL5( ANCESTORS( E ) )))
@@ -84,6 +72,20 @@ EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EV
 EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5( ANCESTORS( E ) )))))))))))))))
 EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5( ANCESTORS( E ) ))))))))))))))))
 EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5(EVAL5( ANCESTORS( E ) )))))))))))))))))
+/*  
+#define ITE(x,y,z) x (y,z)
+#define T(x,y) x
+#define F(x,y) y
+
+
+#define G ,1)
+#define BA ,)
+#define LPAR (
+#define TEST(x,y) x##y
+#define MT TEST LPAR
+ EVAL4( MT 0 G )
+
+
 //EVAL5(EVAL5(//EVAL(ID _C3(C_BASEDESCR, E))
 
 //EVAL2( ANCESTORS( E) )
