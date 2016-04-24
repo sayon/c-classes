@@ -3,7 +3,7 @@
 #include "class.h"
 #define CLASS_mc( NAME, EXTENDS, PUBLIC_FIELD, PRIVATE_FIELD, PUBLIC_METHOD, PRIVATE_METHOD, PUBLIC_CTOR, PRIVATE_CTOR, DTOR ) \
     NAME( mc )\
-    EXTENDS( object )\
+    EXTENDS( CLASS_object)\
     PUBLIC_FIELD( int, x, 0, "%d" )\
     PUBLIC_FIELD( float, y, 0, "%f" )\
     PRIVATE_FIELD( int, _x, 1, "%d" )\
@@ -36,6 +36,3 @@
     BASEARG( 4.0f )\
     BODY( { } )
 
-CLASS( CLASS_mc )
-
-CLASS( CLASS_child )

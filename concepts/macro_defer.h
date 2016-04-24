@@ -2,7 +2,7 @@
 #define DEFER(name) name EMPTY()
 #define OBSTRUCT(x) x DEFER(EMPTY)()
 
-#define EVAL(x)  EVAL1(EVAL1(x)) 
+#define EVAL(x)  EVAL1(EVAL1(EVAL1(x)) )
 
 #define EVAL1(x) EVAL2(EVAL2(EVAL2(x)))
 #define EVAL2(x) EVAL3(EVAL3(EVAL3(x)))

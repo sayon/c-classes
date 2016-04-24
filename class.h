@@ -2,8 +2,6 @@
 
 #include <stdio.h>
 
-typedef struct {   } object;
-
 #include "cl_util.h"
 
 #define FIELD_TO_ARG( type, name, _, __ ) ,type name
@@ -14,11 +12,8 @@ typedef struct {   } object;
 
 
 #include "cl_to_file.h"
-
 #include "cl_ctor.h"
-
 #include "cl_method.h"
-
 
 #define PRIVATE_FIELDS_STRUCT( DESCR ) struct {\
         FOR_PRIVATE_FIELDS( DESCR, DECLARE_FIELD )\
@@ -36,11 +31,20 @@ typedef struct {   } object;
     FOR_PUBLIC_METHODS( DESCR, METHOD_IMPL )
 
 
+   
+#define MAKE_NAMED_INSTANCE(NAME)\
+    CLASS_NAME(DESCR) NAME;
+
+#define MAKE_INSTANCE_AS_BASE(DESCR)\
+    CLASS_NAME( DESCR ) base;
+    
+
+
 #ifdef IMPL /*  Inside .c file */
 
 #define CLASS_TYPE( DESCR )\
     typedef struct {\
-        PARENT_NAME( DESCR ) parent;\
+        MAKE_NAMED_INSTANCE( base )\
         FOR_PUBLIC_FIELDS( DESCR, DECLARE_FIELD )\
         union {\
             PRIVATE_FIELDS_STRUCT( DESCR );\
@@ -54,9 +58,10 @@ typedef struct {   } object;
 
 #else  /*  Inside .h file */
 
+        //PARENT_NAME( DESCR ) parent;
 #define CLASS_TYPE( DESCR )\
     typedef struct { \
-        PARENT_NAME( DESCR ) parent;\
+        MAKE_NAMED_INSTANCE( base )\
         FOR_PUBLIC_FIELDS( DESCR, DECLARE_FIELD )\
         union {\
             char stub[sizeof(PRIVATE_FIELDS_STRUCT(DESCR) )];\
@@ -71,3 +76,9 @@ typedef struct {   } object;
 #endif /*  IMPL */
 
 
+
+#define CLASS_object( NAME, EXTENDS, PUBLIC_FIELD, PRIVATE_FIELD, PUBLIC_METHOD, PRIVATE_METHOD, PUBLIC_CTOR, PRIVATE_CTOR, DTOR ) \
+    NAME(object)
+
+
+CLASS(CLASS_object)
